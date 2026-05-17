@@ -333,7 +333,7 @@ interface CourseRating {
   _id: string;
 }
 
-interface Course {
+export interface Course {
   _id: string;
   courseTitle: string;
   courseDescription: string;
