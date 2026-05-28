@@ -7,7 +7,13 @@ import Loading from "../../components/student/Loading";
 const CourseDetails = () => {
   const { id } = useParams<{ id: string }>();
   const [courseData, setCourseData] = useState<Course | null>(null);
-  const { allCourses, calculateRating } = useContext(AppContext);
+  const {
+    allCourses,
+    calculateRating,
+    calculateChapterTime,
+    calculateCourseDuration,
+    calculateNumberOfLecures,
+  } = useContext(AppContext);
 
   const fetchCourseData = async () => {
     const findCourse = allCourses.find((course) => course._id === id) ?? null;
@@ -63,6 +69,30 @@ const CourseDetails = () => {
             Course by{" "}
             <span className="text-blue-600 underline">SriLearn Academy</span>
           </p>
+          <div className="pt-8 text-gray-800">
+            <h2 className="text-xl font-semibold">Course Structure</h2>
+            <div className="pt-5">
+              {courseData.courseContent.map((chapter, index) => (
+                <div
+                  key={index}
+                  className="border border-gray-300 bg-white mb-2 rounded"
+                >
+                  <div className="flex items-center justify-between px-4 py-3 cursor-pointer select-none">
+                    <div className="flex items-center gap-2">
+                      <img src={assets.down_arrow_icon} alt="arrow icon" />
+                      <p className="font-medium md:text-base text-sm">
+                        {chapter.chapterTitle}
+                      </p>
+                    </div>
+                    <p className="text-sm md:text-default">
+                      {chapter.chapterContent.length} lectures -{" "}
+                      {calculateChapterTime(chapter)}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
         {/* right column */}
         <div>bye</div>

@@ -1,6 +1,7 @@
 import { createContext, useEffect, useState } from "react";
-import { dummyCourses, type Course } from "../assets/assets";
+import { dummyCourses, type Course, type Chapter } from "../assets/assets";
 import { useNavigate, type NavigateFunction } from "react-router-dom";
+import humanizeDuration from "humanize-duration";
 
 interface AppContextType {
   currency: string;
@@ -9,6 +10,9 @@ interface AppContextType {
   calculateRating: (course: Course) => number;
   isEducator: boolean;
   setIsEducator: React.Dispatch<React.SetStateAction<boolean>>;
+  calculateChapterTime: (chapter: Chapter) => string;
+  calculateCourseDuration: (course: Course) => string;
+  calculateNumberOfLecures: (course: Course) => number;
 }
 
 export const AppContext = createContext<AppContextType>({} as AppContextType);
@@ -41,6 +45,36 @@ export const AppContextProvider = ({ children }: AppContextProviderProps) => {
     return totalRating / course.courseRatings.length;
   };
 
+  //Function to calculate course chapter time
+  const calculateChapterTime = (chapter: Chapter) => {
+    let time = 0;
+    chapter.chapterContent.map((lecture) => (time += lecture.lectureDuration));
+    return humanizeDuration(time * 60 * 1000, { units: ["h", "m"] });
+  };
+
+  //Function to calculate the course duration
+  const calculateCourseDuration = (course: Course) => {
+    let time = 0;
+    course.courseContent.map((chapter) => {
+      chapter.chapterContent.map((lecture) => {
+        time += lecture.lectureDuration;
+      });
+    });
+
+    return humanizeDuration(time * 60 * 1000, { units: ["h", "m"] });
+  };
+
+  //Function to calculate number of lecturers in the course
+  const calculateNumberOfLecures = (course: Course) => {
+    let totalLectures = 0;
+    course.courseContent.forEach((chapter) => {
+      if (Array.isArray(chapter.chapterContent)) {
+        totalLectures += chapter.chapterContent.length;
+      }
+    });
+    return totalLectures;
+  };
+
   useEffect(() => {
     fetchAllCourses();
   }, []);
@@ -52,6 +86,9 @@ export const AppContextProvider = ({ children }: AppContextProviderProps) => {
     calculateRating,
     isEducator,
     setIsEducator,
+    calculateChapterTime,
+    calculateCourseDuration,
+    calculateNumberOfLecures,
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
