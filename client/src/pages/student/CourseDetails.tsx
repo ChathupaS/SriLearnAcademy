@@ -4,11 +4,13 @@ import { AppContext } from "../../context/AppContext";
 import { assets, type Course } from "../../assets/assets";
 import Loading from "../../components/student/Loading";
 import humanizeDuration from "humanize-duration";
+import Footer from "../../components/student/Footer";
 
 const CourseDetails = () => {
   const { id } = useParams<{ id: string }>();
   const [courseData, setCourseData] = useState<Course | null>(null);
   const [openSection, setOpenSection] = useState<Record<number, boolean>>({});
+  const [isAlreadyEnrolled, setIsAlreadyEnrolled] = useState<boolean>(false);
   const {
     allCourses,
     calculateRating,
@@ -104,7 +106,7 @@ const CourseDetails = () => {
                     </p>
                   </div>
                   <div
-                    className={`overflow-hidden transition-all duration-800 ${openSection[index] ? "max-h-96" : "max-h-0"}`}
+                    className={`overflow-hidden transition-all duration-100 ${openSection[index] ? "max-h-96" : "max-h-0"}`}
                   >
                     <ul className="list-disc md:pl-10 pl-4 pr-4 py-2 text-gray-600 border-t border-gray-300">
                       {chapter.chapterContent.map((lecture, i) => (
@@ -202,9 +204,28 @@ const CourseDetails = () => {
                 <p>{calculateNumberOfLecures(courseData)} lessons</p>
               </div>
             </div>
+
+            <button className="md:mt-6 mt-4 w-full py-3 rounded bg-blue-600 text-white font-medium">
+              {isAlreadyEnrolled ? "Already Enrolled" : "Enroll Now"}
+            </button>
+
+            <div className="pt-6">
+              <p className="md:text-xl text-lg font-medium text-gray-800">
+                What's in the course?
+              </p>
+              <ul className="ml-4 pt-2 text-sm md:text-default list-disc text-gray-500">
+                <li>Lifetime access with free updates.</li>
+                <li>Step-by-step, hands-on project guidance.</li>
+                <li>Downloadable resources and source code.</li>
+                <li>Quizzes to test your knowledge</li>
+                <li>Certificate of completion.</li>
+              </ul>
+            </div>
           </div>
         </div>
       </div>
+
+      <Footer />
     </>
   ) : (
     <Loading />
