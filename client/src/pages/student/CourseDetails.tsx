@@ -7,12 +7,16 @@ import humanizeDuration from "humanize-duration";
 import Footer from "../../components/student/Footer";
 import YouTube from "react-youtube";
 
+interface PlayerData {
+  videoId: string | undefined;
+}
+
 const CourseDetails = () => {
   const { id } = useParams<{ id: string }>();
   const [courseData, setCourseData] = useState<Course | null>(null);
   const [openSection, setOpenSection] = useState<Record<number, boolean>>({});
   const [isAlreadyEnrolled, setIsAlreadyEnrolled] = useState<boolean>(false);
-  const [playerData, setPlayerData] = useState<string | null>(null);
+  const [playerData, setPlayerData] = useState<PlayerData>();
   const {
     allCourses,
     calculateRating,

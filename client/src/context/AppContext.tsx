@@ -13,6 +13,8 @@ interface AppContextType {
   calculateChapterTime: (chapter: Chapter) => string;
   calculateCourseDuration: (course: Course) => string;
   calculateNumberOfLecures: (course: Course) => number;
+  enrolledCourses: Course[];
+  fetchUserEnrolledCourses: () => Promise<void>;
 }
 
 export const AppContext = createContext<AppContextType>({} as AppContextType);
@@ -27,6 +29,7 @@ export const AppContextProvider = ({ children }: AppContextProviderProps) => {
 
   const [allCourses, setAllCourses] = useState<Course[]>([]);
   const [isEducator, setIsEducator] = useState<boolean>(true);
+  const [enrolledCourses, setEnrolledCourses] = useState<Course[]>([]);
 
   // Fetch All Courses
   const fetchAllCourses = async () => {
@@ -75,8 +78,14 @@ export const AppContextProvider = ({ children }: AppContextProviderProps) => {
     return totalLectures;
   };
 
+  // Fetch user enrolled courses
+  const fetchUserEnrolledCourses = async () => {
+    setEnrolledCourses(dummyCourses);
+  };
+
   useEffect(() => {
     fetchAllCourses();
+    fetchUserEnrolledCourses();
   }, []);
 
   const value: AppContextType = {
@@ -89,6 +98,8 @@ export const AppContextProvider = ({ children }: AppContextProviderProps) => {
     calculateChapterTime,
     calculateCourseDuration,
     calculateNumberOfLecures,
+    enrolledCourses,
+    fetchUserEnrolledCourses,
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
