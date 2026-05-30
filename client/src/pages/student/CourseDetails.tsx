@@ -5,12 +5,14 @@ import { assets, type Course } from "../../assets/assets";
 import Loading from "../../components/student/Loading";
 import humanizeDuration from "humanize-duration";
 import Footer from "../../components/student/Footer";
+import YouTube from "react-youtube";
 
 const CourseDetails = () => {
   const { id } = useParams<{ id: string }>();
   const [courseData, setCourseData] = useState<Course | null>(null);
   const [openSection, setOpenSection] = useState<Record<number, boolean>>({});
   const [isAlreadyEnrolled, setIsAlreadyEnrolled] = useState<boolean>(false);
+  const [playerData, setPlayerData] = useState<string | null>(null);
   const {
     allCourses,
     calculateRating,
@@ -27,7 +29,7 @@ const CourseDetails = () => {
 
   useEffect(() => {
     fetchCourseData();
-  }, []);
+  }, [allCourses]);
 
   const toggleSection = (index: number) => {
     setOpenSection((prev) => ({ ...prev, [index]: !prev[index] }));
@@ -120,7 +122,16 @@ const CourseDetails = () => {
                             <p>{lecture.lectureTitle}</p>
                             <div className="flex gap-2">
                               {lecture.isPreviewFree && (
-                                <p className="text-blue-500 cursor-pointer">
+                                <p
+                                  onClick={() =>
+                                    setPlayerData({
+                                      videoId: lecture.lectureUrl
+                                        .split("/")
+                                        .pop(),
+                                    })
+                                  }
+                                  className="text-blue-500 cursor-pointer"
+                                >
                                   Preview
                                 </p>
                               )}
@@ -155,7 +166,15 @@ const CourseDetails = () => {
 
         {/* right column */}
         <div className="max-w-course-card z-10 shadow-custom-card rounded-t md:rounded-none overflow-hidden bg-white min-w-75 sm:min-w-105">
-          <img src={courseData.courseThumbnail} alt="course thumbnail" />
+          {playerData ? (
+            <YouTube
+              videoId={playerData.videoId}
+              opts={{ playerVars: { autoplay: 1 } }}
+              iframeClassName="w-full aspect-video"
+            />
+          ) : (
+            <img src={courseData.courseThumbnail} alt="course thumbnail" />
+          )}
           <div className="p-5">
             <div className="flex items-center gap-2">
               <img
