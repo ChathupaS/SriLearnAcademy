@@ -204,7 +204,7 @@ interface EnrolledStudentData {
   student: Student;
 }
 
-interface DashboardData {
+export interface DashboardData {
   totalEarnings: number;
   enrolledStudentsData: EnrolledStudentData[];
   totalCourses: number;
