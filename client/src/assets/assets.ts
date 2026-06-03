@@ -199,7 +199,7 @@ interface Student {
   imageUrl: string;
 }
 
-interface EnrolledStudentData {
+export interface EnrolledStudentData {
   courseTitle: string;
   student: Student;
 }
