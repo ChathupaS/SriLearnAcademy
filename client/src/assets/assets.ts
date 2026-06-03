@@ -325,6 +325,7 @@ export interface Chapter {
   chapterOrder: number;
   chapterTitle: string;
   chapterContent: Lecture[];
+  collapsed?: boolean;
 }
 
 interface CourseRating {
